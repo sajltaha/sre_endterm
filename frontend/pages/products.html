@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Products</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/orders.html">Orders</a><a href="/pages/payments.html">Payments</a><a href="/pages/incident.html">Incident</a></div></nav>
+  <main class="container">
+    <h1>Product Catalog</h1>
+    <section class="panel">
+      <h2>Add Product</h2>
+      <form id="product-form" class="form-grid">
+        <label>Name<input name="name" required placeholder="Tablet"></label>
+        <label>Price<input name="price" required type="number" min="1" placeholder="500"></label>
+        <label>Stock<input name="stock" required type="number" min="0" value="10"></label>
+        <div class="form-row"><button class="button" type="submit">Create product</button></div>
+      </form>
+      <div id="product-message" hidden></div>
+    </section>
+    <h2>Products</h2>
+    <table><thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody id="products-table"></tbody></table>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/products.js"></script>
+</body>
+</html>

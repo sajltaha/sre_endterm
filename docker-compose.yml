@@ -1,0 +1,210 @@
+services:
+  auth-service:
+    build: ./services/auth-service
+    container_name: auth-service
+    environment:
+      PORT: 3001
+      SERVICE_NAME: auth-service
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  product-service:
+    build: ./services/product-service
+    container_name: product-service
+    environment:
+      PORT: 3002
+      SERVICE_NAME: product-service
+    ports:
+      - "3002:3002"
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  order-service:
+    build: ./services/order-service
+    container_name: order-service
+    environment:
+      PORT: 3003
+      SERVICE_NAME: order-service
+      PRODUCT_SERVICE_URL: http://product-service:3002
+      PAYMENT_SERVICE_URL: http://payment-service:3004
+      FAIL_ORDER_SERVICE: "false"
+      DATABASE_URL: postgres://sre_user:sre_password@postgres:5432/sre_db
+    ports:
+      - "3003:3003"
+    depends_on:
+      - product-service
+      - payment-service
+      - postgres
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3003/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  payment-service:
+    build: ./services/payment-service
+    container_name: payment-service
+    environment:
+      PORT: 3004
+      SERVICE_NAME: payment-service
+    ports:
+      - "3004:3004"
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3004/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  notification-service:
+    build: ./services/notification-service
+    container_name: notification-service
+    environment:
+      PORT: 3005
+      SERVICE_NAME: notification-service
+    ports:
+      - "3005:3005"
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3005/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  user-profile-service:
+    build: ./services/user-profile-service
+    container_name: user-profile-service
+    environment:
+      PORT: 3006
+      SERVICE_NAME: user-profile-service
+    ports:
+      - "3006:3006"
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3006/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    environment:
+      PORT: 3000
+      SERVICE_NAME: api-gateway
+      AUTH_SERVICE_URL: http://auth-service:3001
+      PRODUCT_SERVICE_URL: http://product-service:3002
+      ORDER_SERVICE_URL: http://order-service:3003
+      PAYMENT_SERVICE_URL: http://payment-service:3004
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+      USER_PROFILE_SERVICE_URL: http://user-profile-service:3006
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+      - payment-service
+      - notification-service
+      - user-profile-service
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    container_name: sre-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+    networks: [sre-net]
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: sre-postgres
+    environment:
+      POSTGRES_USER: sre_user
+      POSTGRES_PASSWORD: sre_password
+      POSTGRES_DB: sre_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks: [sre-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sre_user -d sre_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: sre-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-lifecycle"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+      - payment-service
+      - notification-service
+      - user-profile-service
+      - api-gateway
+    restart: unless-stopped
+    networks: [sre-net]
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: sre-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3007:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks: [sre-net]
+
+networks:
+  sre-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  grafana-data:

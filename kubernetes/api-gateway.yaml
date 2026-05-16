@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: sre-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: api-gateway }
+  template:
+    metadata:
+      labels: { app: api-gateway }
+    spec:
+      containers:
+        - name: api-gateway
+          image: sre-api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 3000 }]
+          env:
+            - { name: PORT, value: "3000" }
+            - { name: SERVICE_NAME, value: api-gateway }
+            - name: AUTH_SERVICE_URL
+              valueFrom: { configMapKeyRef: { name: sre-common-config, key: AUTH_SERVICE_URL } }
+            - name: PRODUCT_SERVICE_URL
+              valueFrom: { configMapKeyRef: { name: sre-common-config, key: PRODUCT_SERVICE_URL } }
+            - name: ORDER_SERVICE_URL
+              valueFrom: { configMapKeyRef: { name: sre-common-config, key: ORDER_SERVICE_URL } }
+            - name: PAYMENT_SERVICE_URL
+              valueFrom: { configMapKeyRef: { name: sre-common-config, key: PAYMENT_SERVICE_URL } }
+            - name: NOTIFICATION_SERVICE_URL
+              valueFrom: { configMapKeyRef: { name: sre-common-config, key: NOTIFICATION_SERVICE_URL } }
+            - name: USER_PROFILE_SERVICE_URL
+              valueFrom: { configMapKeyRef: { name: sre-common-config, key: USER_PROFILE_SERVICE_URL } }
+          readinessProbe: { httpGet: { path: /health, port: 3000 }, initialDelaySeconds: 5, periodSeconds: 10 }
+          livenessProbe: { httpGet: { path: /health, port: 3000 }, initialDelaySeconds: 15, periodSeconds: 20 }
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits: { cpu: "500m", memory: "256Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: sre-project
+spec:
+  type: NodePort
+  selector: { app: api-gateway }
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30080
+

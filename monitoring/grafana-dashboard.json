@@ -1,0 +1,4 @@
+{
+  "title": "SRE Microservices Monitoring Dashboard",
+  "note": "The ready-to-load dashboard is provisioned from monitoring/grafana/dashboards/sre-dashboard.json."
+}

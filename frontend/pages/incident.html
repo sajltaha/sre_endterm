@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Incident Demo</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/orders.html">Orders</a><a href="/pages/monitoring.html">Monitoring</a></div></nav>
+  <main class="container">
+    <h1>Incident Simulation</h1>
+    <p class="lead">Scenario: Order Service failure caused by wrong configuration. The script enables <code>FAIL_ORDER_SERVICE=true</code>, so `/health` returns 500 and order creation returns 503.</p>
+    <section class="panel">
+      <h2>Commands</h2>
+      <pre>./scripts/simulate-incident.sh
+./scripts/recover-incident.sh</pre>
+      <p>Expected behavior during incident: order-service becomes DOWN, the Orders page shows an error, and Prometheus alert rules can trigger.</p>
+      <button id="refresh-health" class="button">Check order-service health</button>
+    </section>
+    <div id="health-cards" class="grid"></div>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/health.js"></script>
+</body>
+</html>

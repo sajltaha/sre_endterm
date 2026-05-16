@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Orders</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/products.html">Products</a><a href="/pages/payments.html">Payments</a><a href="/pages/incident.html">Incident</a></div></nav>
+  <main class="container">
+    <div class="page-title"><h1>Orders</h1><button id="refresh-orders" class="button">Refresh orders</button></div>
+    <div id="order-health" class="message">Checking order-service...</div>
+    <section class="panel">
+      <h2>Create Order</h2>
+      <form id="order-form" class="form-grid">
+        <label>User ID<input name="userId" required type="number" value="1"></label>
+        <label>Product ID<input name="productId" required type="number" value="1"></label>
+        <label>Quantity<input name="quantity" required type="number" min="1" value="1"></label>
+        <div class="form-row"><button class="button" type="submit">Create order</button></div>
+      </form>
+      <div id="order-message" hidden></div>
+    </section>
+    <h2>Orders</h2>
+    <table><thead><tr><th>ID</th><th>User</th><th>Product</th><th>Qty</th><th>Status</th><th>Created</th></tr></thead><tbody id="orders-table"></tbody></table>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/orders.js"></script>
+</body>
+</html>

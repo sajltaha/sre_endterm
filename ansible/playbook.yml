@@ -1,0 +1,51 @@
+---
+- name: Configure Ubuntu server and deploy SRE project
+  hosts: sre_servers
+  become: yes
+  vars:
+    project_dir: /opt/sre-endterm-project
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - docker.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create project directory
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy project files
+      copy:
+        src: ../
+        dest: "{{ project_dir }}/"
+        mode: preserve
+
+    - name: Start containers with Docker Compose
+      command: docker compose up --build -d
+      args:
+        chdir: "{{ project_dir }}"
+
+    - name: Check API gateway health
+      uri:
+        url: http://localhost:3000/health
+        method: GET
+        status_code: 200
+      register: gateway_health
+      retries: 10
+      delay: 5
+      until: gateway_health.status == 200
+

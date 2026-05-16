@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Monitoring</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/orders.html">Orders</a><a href="/pages/incident.html">Incident</a></div></nav>
+  <main class="container">
+    <h1>Monitoring and SLOs</h1>
+    <p class="lead">Prometheus collects service metrics from `/metrics`. Grafana is automatically provisioned with the Prometheus datasource and the SRE dashboard.</p>
+    <div class="grid">
+      <div class="card slo-card"><h3>Availability SLO</h3><strong>>= 99%</strong></div>
+      <div class="card slo-card"><h3>P95 Latency SLO</h3><strong><= 200ms</strong></div>
+      <div class="card slo-card"><h3>Error Rate SLO</h3><strong><= 1%</strong></div>
+    </div>
+    <section class="panel">
+      <h2>Tools</h2>
+      <p><a class="button" href="http://localhost:9090" target="_blank">Open Prometheus</a> <a class="button secondary" href="http://localhost:3007" target="_blank">Open Grafana</a></p>
+      <p>Grafana login: <code>admin / admin</code></p>
+    </section>
+  </main>
+</body>
+</html>

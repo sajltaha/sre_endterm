@@ -1,0 +1,57 @@
+{
+  "id": null,
+  "uid": "sre-microservices-dashboard",
+  "title": "SRE Microservices Monitoring Dashboard",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "tags": ["sre", "microservices", "endterm"],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "1. Service Availability",
+      "gridPos": {"x": 0, "y": 0, "w": 8, "h": 5},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "up", "legendFormat": "{{service}}"}],
+      "fieldConfig": {"defaults": {"mappings": [{"options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}, "type": "value"}], "thresholds": {"steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}}
+    },
+    {
+      "type": "timeseries",
+      "title": "2. HTTP Request Rate",
+      "gridPos": {"x": 8, "y": 0, "w": 8, "h": 5},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "sum(rate(http_requests_total[5m])) by (service)", "legendFormat": "{{service}}"}]
+    },
+    {
+      "type": "timeseries",
+      "title": "3. Error Rate",
+      "gridPos": {"x": 16, "y": 0, "w": 8, "h": 5},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) by (service) / sum(rate(http_requests_total[5m])) by (service)", "legendFormat": "{{service}}"}]
+    },
+    {
+      "type": "timeseries",
+      "title": "4. 95th Percentile Latency",
+      "gridPos": {"x": 0, "y": 5, "w": 8, "h": 5},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service))", "legendFormat": "{{service}}"}]
+    },
+    {
+      "type": "stat",
+      "title": "5. Order Service Health",
+      "gridPos": {"x": 8, "y": 5, "w": 8, "h": 5},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "service_health{service=\"order-service\"}", "legendFormat": "order-service"}],
+      "fieldConfig": {"defaults": {"mappings": [{"options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}, "type": "value"}]}}
+    },
+    {
+      "type": "bargauge",
+      "title": "6. Total Requests by Service",
+      "gridPos": {"x": 16, "y": 5, "w": 8, "h": 5},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "sum(http_requests_total) by (service)", "legendFormat": "{{service}}"}]
+    },
+    {
+      "type": "table",
+      "title": "7. Prometheus Target Status",
+      "gridPos": {"x": 0, "y": 10, "w": 24, "h": 6},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "Prometheus"}, "expr": "up", "format": "table", "instant": true}]
+    }
+  ]
+}
+

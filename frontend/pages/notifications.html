@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Notifications</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/profiles.html">Profiles</a><a href="/pages/monitoring.html">Monitoring</a></div></nav>
+  <main class="container">
+    <h1>Notifications</h1>
+    <section class="panel">
+      <h2>Create Notification</h2>
+      <form id="notification-form" class="form-grid">
+        <label>User ID<input name="userId" required type="number" value="1"></label>
+        <label>Type<select name="type"><option>email</option><option>sms</option><option>push</option></select></label>
+        <label>Message<input name="message" required value="Order created successfully"></label>
+        <div class="form-row"><button class="button" type="submit">Send notification</button></div>
+      </form>
+      <div id="notification-message" hidden></div>
+    </section>
+    <h2>Notification Records</h2>
+    <table><thead><tr><th>ID</th><th>User</th><th>Type</th><th>Message</th><th>Created</th></tr></thead><tbody id="notifications-table"></tbody></table>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/notifications.js"></script>
+</body>
+</html>

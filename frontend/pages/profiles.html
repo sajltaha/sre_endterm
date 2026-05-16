@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Profiles</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/products.html">Products</a><a href="/pages/notifications.html">Notifications</a></div></nav>
+  <main class="container">
+    <h1>User Profiles</h1>
+    <section class="panel">
+      <h2>Create Profile</h2>
+      <form id="profile-form" class="form-grid">
+        <label>Name<input name="name" required placeholder="Aigerim Student"></label>
+        <label>Email<input name="email" required type="email" placeholder="student@example.com"></label>
+        <label>Address<input name="address" placeholder="Astana"></label>
+        <div class="form-row"><button class="button" type="submit">Create profile</button></div>
+      </form>
+      <div id="profile-message" hidden></div>
+    </section>
+    <h2>Profiles</h2>
+    <table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Address</th></tr></thead><tbody id="profiles-table"></tbody></table>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/profiles.js"></script>
+</body>
+</html>

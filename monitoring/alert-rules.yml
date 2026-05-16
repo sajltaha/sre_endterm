@@ -1,0 +1,39 @@
+groups:
+  - name: sre-project-alerts
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Prometheus cannot scrape target {{ $labels.instance }}."
+
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) by (service) / sum(rate(http_requests_total[5m])) by (service) > 0.01
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate for {{ $labels.service }}"
+          description: "More than 1% of requests are failing."
+
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service)) > 0.2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency for {{ $labels.service }}"
+          description: "95th percentile latency is above 200ms."
+
+      - alert: OrderServiceDown
+        expr: service_health{service="order-service"} == 0 or up{instance="order-service:3003"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Order service is unhealthy"
+          description: "Order service health gauge or Prometheus target indicates failure."
+

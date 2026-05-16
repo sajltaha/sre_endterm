@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Payments</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">SRE End Term</a><div class="navlinks"><a href="/pages/services.html">Services</a><a href="/pages/auth.html">Auth</a><a href="/pages/orders.html">Orders</a><a href="/pages/notifications.html">Notifications</a></div></nav>
+  <main class="container">
+    <h1>Payments</h1>
+    <section class="panel">
+      <h2>Create Payment</h2>
+      <form id="payment-form" class="form-grid">
+        <label>Order ID<input name="orderId" required type="number" value="1"></label>
+        <label>Amount<input name="amount" required type="number" min="1" value="100"></label>
+        <div class="form-row"><button class="button" type="submit">Create payment</button></div>
+      </form>
+      <div id="payment-message" hidden></div>
+    </section>
+    <h2>Payment Records</h2>
+    <table><thead><tr><th>ID</th><th>Order</th><th>Amount</th><th>Status</th><th>Created</th></tr></thead><tbody id="payments-table"></tbody></table>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/payments.js"></script>
+</body>
+</html>
