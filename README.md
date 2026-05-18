@@ -185,7 +185,25 @@ Recover:
 ./scripts/recover-incident.sh
 ```
 
-## 10. Docker Swarm Deployment
+## 10. Load Testing and Capacity Planning
+
+Generate traffic for capacity planning and Grafana evidence:
+
+```bash
+./scripts/load-test.sh
+```
+
+For a larger local test:
+
+```bash
+REQUESTS=300 SLEEP_SECONDS=0.02 ./scripts/load-test.sh
+```
+
+Then check Grafana request rate, latency, and error panels at http://localhost:3007.
+
+See [docs/load-testing.md](docs/load-testing.md) and [docs/capacity-planning.md](docs/capacity-planning.md).
+
+## 11. Docker Swarm Deployment
 
 ```bash
 ./scripts/deploy-swarm.sh
@@ -193,7 +211,7 @@ docker service ls
 docker stack ps sre-app
 ```
 
-## 11. Kubernetes Deployment
+## 12. Kubernetes Deployment
 
 For Minikube:
 
@@ -206,7 +224,7 @@ kubectl get svc -n sre-project
 
 Frontend and API Gateway use NodePort for local access.
 
-## 12. Terraform Explanation
+## 13. Terraform Explanation
 
 Terraform uses the local Docker provider so the project is runnable without paid cloud infrastructure.
 
@@ -220,7 +238,7 @@ terraform destroy
 
 It provisions a Docker network and demo Nginx containers to demonstrate reproducible infrastructure.
 
-## 13. Ansible Explanation
+## 14. Ansible Explanation
 
 The Ansible playbook demonstrates how an Ubuntu server can be prepared for deployment.
 
@@ -231,7 +249,7 @@ ansible-playbook -i inventory.ini playbook.yml
 
 It installs Docker, copies project files, starts Compose, and checks API Gateway health.
 
-## 14. CI/CD Pipeline
+## 15. CI/CD Pipeline
 
 The project includes a GitHub Actions workflow:
 
@@ -249,7 +267,7 @@ The pipeline includes:
 
 See [docs/ci-cd.md](docs/ci-cd.md).
 
-## 15. Known Limitations
+## 16. Known Limitations
 
 - Microservices use in-memory data for clarity and easy local execution.
 - PostgreSQL is included as infrastructure but not deeply integrated into every service.

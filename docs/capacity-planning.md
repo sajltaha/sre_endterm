@@ -11,6 +11,8 @@
 
 Node.js services are lightweight and can run with 128-256Mi memory for this demo. The order service and payment service require more CPU because they are part of the critical checkout path.
 
+The project includes `scripts/load-test.sh` to generate traffic against product reads, order creation, and payment creation. This provides practical evidence for request rate, latency, and error-rate analysis in Prometheus and Grafana.
+
 ## Bottlenecks
 
 - order-service: depends on product and payment services and can become a workflow bottleneck.
@@ -25,6 +27,15 @@ Node.js services are lightweight and can run with 128-256Mi memory for this demo
 - Add Redis caching for product catalog reads.
 - Increase CPU/RAM for services under sustained load.
 
+## Load Test Command
+
+```bash
+./scripts/load-test.sh
+REQUESTS=300 SLEEP_SECONDS=0.02 ./scripts/load-test.sh
+```
+
+After running the test, observe Grafana panels for request rate, p95 latency, and error rate.
+
 ## Capacity Table
 
 | Component | Current Capacity | Planned Capacity |
@@ -35,4 +46,3 @@ Node.js services are lightweight and can run with 128-256Mi memory for this demo
 | Payment Service | 2 replicas | 3-5 replicas with HPA |
 | PostgreSQL | Single local instance | Managed PostgreSQL or replicated DB |
 | Monitoring | Single Prometheus/Grafana | Persistent storage and alert manager |
-
