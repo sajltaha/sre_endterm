@@ -3,7 +3,7 @@
   hosts: sre_servers
   become: yes
   vars:
-    project_dir: /opt/sre-endterm-project
+    project_dir: /opt/sre-final-project
   tasks:
     - name: Install required packages
       apt:
@@ -48,4 +48,3 @@
       retries: 10
       delay: 5
       until: gateway_health.status == 200
-

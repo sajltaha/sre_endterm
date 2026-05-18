@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "Project name used for local Docker infrastructure resources."
   type        = string
-  default     = "sre-endterm"
+  default     = "sre-final-project"
 }
 
 variable "region" {
@@ -21,4 +21,3 @@ variable "vm_size" {
   type        = string
   default     = "local-docker-small"
 }
-

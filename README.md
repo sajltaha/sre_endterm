@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-This end-term project demonstrates Site Reliability Engineering practices using a practical local microservices system. It includes six Node.js services, an API Gateway, a multi-page frontend dashboard, Docker Compose, Docker Swarm, Kubernetes, Terraform, Ansible, Prometheus, Grafana, SLI/SLO definitions, incident simulation, recovery automation, and capacity planning.
+This final project demonstrates Site Reliability Engineering practices using a practical local microservices system. It includes six Node.js services, an API Gateway, a multi-page frontend dashboard, Docker Compose, Docker Swarm, Kubernetes, Terraform, Ansible, Prometheus, Grafana, SLI/SLO definitions, CI/CD, incident simulation, recovery automation, and capacity planning.
 
 The project is intentionally student-friendly: data is stored in memory for easy local execution, while the infrastructure and monitoring patterns mirror a real SRE workflow.
 
@@ -25,6 +25,8 @@ PostgreSQL :5432
 
 Prometheus :9090 scrapes /metrics from every service.
 Grafana :3007 automatically loads the Prometheus datasource and SRE dashboard.
+
+GitHub Actions validates, builds, integration-tests, and publishes images.
 ```
 
 ## 3. Services and Ports
@@ -229,7 +231,25 @@ ansible-playbook -i inventory.ini playbook.yml
 
 It installs Docker, copies project files, starts Compose, and checks API Gateway health.
 
-## 14. Known Limitations
+## 14. CI/CD Pipeline
+
+The project includes a GitHub Actions workflow:
+
+```text
+.github/workflows/ci-cd.yml
+```
+
+The pipeline includes:
+
+- validation of JSON, YAML, shell scripts, Docker Compose, and Terraform
+- Docker image builds for all microservices, API Gateway, and frontend
+- Docker Compose integration test for health checks, auth flow, product listing, order creation, and metrics
+- Docker image publishing to GitHub Container Registry on `main`
+- deployment command summary for Compose, Swarm, Kubernetes, and incident simulation
+
+See [docs/ci-cd.md](docs/ci-cd.md).
+
+## 15. Known Limitations
 
 - Microservices use in-memory data for clarity and easy local execution.
 - PostgreSQL is included as infrastructure but not deeply integrated into every service.

@@ -6,7 +6,7 @@
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
-  "tags": ["sre", "microservices", "endterm"],
+  "tags": ["sre", "microservices", "final-project"],
   "panels": [
     {
       "type": "stat",
@@ -54,4 +54,3 @@
     }
   ]
 }
-
