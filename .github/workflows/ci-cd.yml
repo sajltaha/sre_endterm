@@ -156,6 +156,19 @@ jobs:
           REPO_LC="$(basename '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
           SHORT_SHA="${GITHUB_SHA::7}"
 
+          retry_push() {
+            local image="$1"
+            local attempt
+            for attempt in 1 2 3; do
+              if docker push "$image"; then
+                return 0
+              fi
+              echo "Push failed for ${image}. Retry ${attempt}/3 after temporary registry error."
+              sleep $((attempt * 10))
+            done
+            docker push "$image"
+          }
+
           build_and_push() {
             local name="$1"
             local context="$2"
@@ -163,8 +176,8 @@ jobs:
               -t "ghcr.io/${OWNER_LC}/${REPO_LC}-${name}:latest" \
               -t "ghcr.io/${OWNER_LC}/${REPO_LC}-${name}:${SHORT_SHA}" \
               "$context"
-            docker push "ghcr.io/${OWNER_LC}/${REPO_LC}-${name}:latest"
-            docker push "ghcr.io/${OWNER_LC}/${REPO_LC}-${name}:${SHORT_SHA}"
+            retry_push "ghcr.io/${OWNER_LC}/${REPO_LC}-${name}:latest"
+            retry_push "ghcr.io/${OWNER_LC}/${REPO_LC}-${name}:${SHORT_SHA}"
           }
 
           build_and_push auth-service services/auth-service
